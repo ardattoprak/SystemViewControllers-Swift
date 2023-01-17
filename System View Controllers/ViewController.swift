@@ -8,7 +8,7 @@
 import UIKit
 import SafariServices
 
-class ViewController: UIViewController {
+class ViewController: UIViewController , UIImagePickerControllerDelegate, UINavigationControllerDelegate{
 
     //MARK: - UI Elements
     @IBOutlet var imageView: UIImageView!
@@ -23,6 +23,24 @@ class ViewController: UIViewController {
     }
     
     //MARK: - Functions
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        // Bu fonksiyon, UIImagePicker tarafından bir fotoğraf
+        // seçildiğinde veya çekildiğinde çalışır.
+        
+        // info: Bir Dictionary'dir ve seçilen & çekilen medyanın kendisini ve
+        // hakkında detaylı bilgi verir.
+        
+        // Dictionary içerisinden, kullanıcının seçtiği görsele ulaşılır.
+        guard let selectedImage = info[.originalImage] as? UIImage else { return }
+        
+        // Seçilen görseli imageView'a aktarmak
+        imageView.image = selectedImage
+        
+        // Bir ViewController ekrandan gitmesi için kullanılan fonksiyon: dismiss
+        dismiss(animated: true, completion: nil)
+        
+    }
     
     //MARK: - Actions
     @IBAction func shareButtonTapped(_ button: UIButton){
@@ -51,6 +69,42 @@ class ViewController: UIViewController {
     }
     
     @IBAction func photosButtonTapped(_ button: UIButton){
+        let imagePickerController = UIImagePickerController()
+        // ImagePickerController'ın yöneticisi olan sınıfın bu ViewController olduğunu belirtir.
+        // Belirtmezseniz Delegate fonksiyonları çalışmayacaktır.
+        imagePickerController.delegate = self
+        
+        
+        
+        // actionSheet: Ekranın altından gelen sayfa görünümde
+        // alert: Ekranın ortasında beliren pop-up.
+        
+        
+        let alertController = UIAlertController(title: "Görsel kaynağı seçin", message: nil, preferredStyle: .actionSheet)
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        let cameraAction = UIAlertAction(title: "Kamera", style: .default) { action in
+            // Kamera aksiyonu tetiklendiğinde bu kod bloğu çalışır.
+            
+            imagePickerController.sourceType = .camera
+            
+            self.present(imagePickerController, animated: true)
+        }
+        let photoLibrary = UIAlertAction(title: "Fotoğraf Galerisi", style: .default) { action in
+            
+            imagePickerController.sourceType = .photoLibrary
+            
+            self.present(imagePickerController, animated: true)
+            
+            
+        }
+        
+        alertController.addAction(cancelAction)
+        alertController.addAction(cameraAction)
+        alertController.addAction(photoLibrary)
+        
+        present(alertController, animated: true)
+        
         
     }
     
