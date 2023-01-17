@@ -7,8 +7,9 @@
 
 import UIKit
 import SafariServices
+import MessageUI
 
-class ViewController: UIViewController , UIImagePickerControllerDelegate, UINavigationControllerDelegate{
+class ViewController: UIViewController , UIImagePickerControllerDelegate, UINavigationControllerDelegate, MFMailComposeViewControllerDelegate{
 
     //MARK: - UI Elements
     @IBOutlet var imageView: UIImageView!
@@ -109,6 +110,26 @@ class ViewController: UIViewController , UIImagePickerControllerDelegate, UINavi
     }
     
     @IBAction func emailButtonTapped(_ button: UIButton){
+        // Öncelikle mail atılabilir bir ortamda olunduğundan emin olmalıyız.
+        // Örn: Simulatorler mail atamaz. Bu durumda uygulamanızın
+        // çökmemesi için bu kontrolü yapmalısınız.
+        guard MFMailComposeViewController.canSendMail() else { return }
+        
+        // Adım 1: Controller Oluşturmak
+        let mailComposer = MFMailComposeViewController()
+        mailComposer.mailComposeDelegate = self
+        
+        // Mail alıcılarını ayarlayabilirsiniz.
+        mailComposer.setToRecipients(["ardattoprak@gmai.com"])
+        
+        // Mailin subject'ini ayarlayabilirisniz.
+        mailComposer.setSubject("Seleamm")
+        
+        // Mailin içeriğini de belirtebilirsiniz.
+        mailComposer.setMessageBody("Nasılsınız", isHTML: false)
+        
+        // Adım 2: Oluşturulan ViewControlller'ın ekranda gösterilmesi.
+        present(mailComposer, animated: true, completion: nil)
         
     }
 
